@@ -4,9 +4,9 @@ We have used the following datasets :
 
 | **Dataset**                                                    | **Objective**                                                                                                             |
 | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |                 
-| **Digital Soil Map of the World (SoilWise / FAO-UNESCO)**               | Global 1:5,000,000 scale soil dataset representing dominant soil types per region for environmental and agricultural modeling.       |
-| **Open-Meteo API**                                                      | Provides global historical and forecasted weather data (temperature, rainfall, humidity, etc.) via REST API.                         |
 | **Google Earth Engine – Unsupervised Classification Embedding Dataset** | Satellite-based unsupervised feature embeddings capturing land-cover and spectral characteristics for geospatial analysis.           |
+| **Open-Meteo API**                                                      | Provides global historical and forecasted weather data (temperature, rainfall, humidity, etc.) via REST API.                         |
+| **Digital Soil Map of the World (SoilWise / FAO-UNESCO)**               | Global 1:5,000,000 scale soil dataset representing dominant soil types per region for environmental and agricultural modeling.       |
 | **Agmarknet – Mandi Price Trend**                                       | Provides daily prices and arrivals of agricultural commodities across Indian mandis for monitoring market trends.                    |                         |
 | **Nominatim (OpenStreetMap API)**                                       | Geocoding service to convert market or location names into geographic coordinates and administrative boundaries.    |
 
