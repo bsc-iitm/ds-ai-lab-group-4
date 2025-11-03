@@ -168,7 +168,91 @@ Because the system is multilingual, these questions can also be asked in local I
 
 * Story 8.2 — Explainability As a farmer, I want the system to explain why it is giving a recommendation, so that I can trust and understand the advice.
 
-### 6\. Design Implications & Notes
+  ---
+
+### 6\. User Story Process Flow
+
+```mermaid
+graph TD
+    A["User Story 1: Farmer Queries Irrigation Need"] -->|Input| B["Farmer asks: 'Should I irrigate<br/>my wheat field today?'"]
+    
+    B --> C["Server: Parse Query"]
+    C -->|Extract| C1["Intent: Irrigation Decision<br/>Entity: Wheat Field<br/>Time: Today"]
+    
+    C1 --> D["Server: Retrieve Context"]
+    D -->|DB Query| D1["User: Location Meerut<br/>Crop: Wheat, Stage: Tillering<br/>Farm: 2 hectares"]
+    
+    D1 --> E["Server: Assemble Context"]
+    E -->|Merge| E1["Complete Context Ready"]
+    
+    E1 --> F["LLM: Generate Tool Calls"]
+    F -->|Calls| F1["Call Weather API<br/>Call Soil API<br/>Call Crop History API"]
+    
+    F1 --> G["External APIs Return Data"]
+    G -->|Weather| G1["Temp: 28°C<br/>Humidity: 65%<br/>Rainfall: 0mm<br/>Forecast: No rain 3 days"]
+    G -->|Soil| G2["Moisture: 35%<br/>Optimal: 45-55%"]
+    G -->|History| G3["Last Irrigation: 5 days ago<br/>Avg Cycle: 7 days"]
+    
+    G1 & G2 & G3 --> H["LLM: Generate Response"]
+    H -->|Reasoning| H1["Soil moisture below threshold<br/>No rain forecasted<br/>Within irrigation cycle"]
+    H -->|Output| H2["Recommendation: YES, irrigate today<br/>Action: Apply 40mm water<br/>Timing: Early morning<br/>Confidence: 92%"]
+    
+    H2 --> I["Response Formatter<br/>Localize & Format"]
+    I -->|Output| I1["JSON Response<br/>Hindi/English Text<br/>Visual Chart"]
+    
+    I1 --> J["Send to UI"]
+    J -->|Display| K["Farmer Receives<br/>Clear Actionable Advice<br/>with Reasoning"]
+    
+    K --> L["Store Interaction<br/>in History DB"]
+    
+    M["User Story 2: Historical Context Usage"] -->|Next Query| N["Farmer: 'How's my crop<br/>looking compared to last year?'"]
+    
+    N --> O["LLM Retrieves History"]
+    O -->|References| O1["Previous queries on<br/>Wheat crop<br/>Last year's data"]
+    
+    O1 --> P["Personalized Comparison<br/>with Trend Analysis"]
+    P -->|Output| Q["Improved Response<br/>with Context"]
+    
+    R["User Story 3: Multi-Tool API Orchestration"] -->|Scenario| S["Farmer: 'When should I sell<br/>my wheat harvest?'"]
+    
+    S --> T["LLM Decides Tools:<br/>Mandi Prices API<br/>Weather API<br/>Market Trend API"]
+    
+    T -->|Parallel Calls| U["APIs Execute<br/>in Parallel"]
+    U -->|Results| U1["Current Price: Rs 2100/quintal<br/>Trend: Upward<br/>Forecast: Better conditions<br/>coming harvest"]
+    
+    U1 --> V["LLM Synthesizes<br/>Multi-source Data"]
+    V -->|Output| W["Recommendation: Wait 2-3 weeks<br/>Expected Price: Rs 2300-2400<br/>Risk: Weather change"]
+```
+
+---
+
+### 7\. Detailed Request-Response Flow
+
+#### **Phase 1: User Request & Validation (Steps 1-4)**
+- **Step 1**: Farmer submits a query through the mobile/web UI (e.g., "Should I irrigate my wheat crop this week?")
+- **Step 2**: UI sends HTTP API request to the REST endpoint with the query
+- **Step 3**: Authentication middleware validates user credentials and permissions
+- **Step 4**: Request is routed to the Query Parser for processing
+
+#### **Phase 2: Context Retrieval from Database (Steps 5-8)**
+- **Step 5**: Query Parser extracts intent and parameters from user input
+- **Step 6**: Server fetches **User Profile Data** (farmer ID, location, language preferences)
+- **Step 7**: Retrieves **Context Settings** (crop type, farm size, irrigation method, soil type)
+- **Step 8**: Pulls **Query History** for conversation continuity and personalization
+
+#### **Phase 3: LLM Preparation (Steps 9-10)**
+- **Step 9**: Context Assembler merges all retrieved data into a unified context object
+- **Step 10**: Prompt Builder constructs a detailed system prompt including:
+  - User's historical interactions
+  - Current context (location, crop stage, weather)
+  - Available tools and their descriptions
+  - Instructions for tool usage and response format
+
+#### **Phase 4: LLM Processing & Tool Orchestration (Steps 11-17)**
+- **Step 11**: LLM analyzes the query and determines which tools are needed
+- **Step 12**: LLM generates structured too
+
+### 8\. Design Implications & Notes
 
 - Confidence & Explainability: For each advice, AgroSense will provide confidence scores and brief reasoning (e.g. “NDVI dropped by X%, likely due to moisture stress; recommended action is Y”).
 - Offline / Low Connectivity: Because rural connectivity may be sporadic, certain core functions (e.g. voice recognition, local caching) should work offline or in delay-synced mode.
