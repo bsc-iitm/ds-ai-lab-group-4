@@ -113,6 +113,61 @@ Below are example questions farmers might ask in English. The system is intended
 
 Because the system is multilingual, these questions can also be asked in local Indian languages (e.g. Hindi, Marathi, Telugu, etc.) via voice or text, and the system will interpret and respond appropriately.
 
+### 5\. User Stories by Lifecycle Stage
+## 1. Onboarding & Setup
+Story 1.1 As a farmer, I want to enter my location or allow GPS detection, so that the system can automatically identify my agro-climatic zone.
+
+Story 1.2 As a farmer, I want to draw or confirm my field boundaries (or accept auto-detected ones), so that I can monitor only my specific fields.
+
+Story 1.3 As a farmer, I want to provide details like past crops, soil type, and irrigation access, so that AgroSense can give more accurate and tailored advice.
+
+## 2. Pre-Sowing Planning
+Story 2.1 As a farmer, I want to ask “Which crop should I plant this season?” so that I can choose crops best suited to my soil and climate.
+
+Story 2.2 As a farmer, I want to know the best sowing window, so that I can optimize yield potential based on local weather patterns.
+
+Story 2.3 As a farmer, I want to compare expected yield and profit for different crops, so that I can make an informed decision balancing risk and reward.
+
+## 3. Sowing & Early Growth
+Story 3.1 As a farmer, I want to monitor how well my crop is germinating using satellite imagery, so that I can detect uneven growth early.
+
+Story 3.2 As a farmer, I want to receive alerts when parts of my field show poor vegetation indices (NDVI), so that I can take corrective action before it spreads.
+
+Story 3.3 As a farmer, I want to speak or type “Is the soil too dry?” and get an immediate answer, so that I can adjust irrigation before damage occurs.
+
+## 4. Mid-Season Monitoring & Advisory
+Story 4.1 As a farmer, I want to know whether my crop shows signs of nutrient deficiency or water stress, so that I can apply fertilizer or water precisely when needed.
+
+Story 4.2 As a farmer, I want AgroSense to ask clarifying questions (e.g., “Do you see yellowing?”), so that the diagnosis can become more accurate.
+
+Story 4.3 As a farmer, I want to receive actionable, step-by-step recommendations (e.g., quantity, timing, type of fertilizer), so that I can implement them easily and safely.
+
+## 5. Yield Forecasting & Harvest Timing
+Story 5.1 As a farmer, I want to get a forecast of my expected yield with a confidence range, so that I can plan my finances and logistics.
+
+Story 5.2 As a farmer, I want the system to suggest the best harvest window, so that I can harvest when quality and yield are optimal.
+
+Story 5.3 As a farmer, I want to simulate scenarios (“If I delay harvest 5 days, what happens?”), so that I can make informed trade-offs.
+
+## 6. Post-Harvest & Market Advisory
+Story 6.1 As a farmer, I want to check real-time mandi prices and nearby market trends, so that I can decide when and where to sell.
+
+Story 6.2 As a farmer, I want AgroSense to predict short-term price changes, so that I can plan storage or sale timing strategically.
+
+Story 6.3 As a farmer, I want to compare expected profit between selling now and later, so that I can make financially sound decisions.
+
+## 7. Review & Feedback Loop
+Story 7.1 As a farmer, I want to enter my actual yield and field observations, so that the system can improve its accuracy for future seasons.
+
+Story 7.2 As a farmer, I want to visualize performance zones on my field map, so that I can understand which areas performed well or poorly.
+
+Story 7.3 As a farmer, I want AgroSense to summarize learnings and suggest improvements for next season, so that I continuously enhance my practices.
+
+## Cross-Cutting Functional Stories
+Story 8.1 — Multilingual Support As a farmer, I want to communicate in my local language via voice or text, so that I can use the app comfortably regardless of literacy level.
+
+Story 8.2 — Explainability As a farmer, I want the system to explain why it is giving a recommendation, so that I can trust and understand the advice.
+
 ### 5\. Design Implications & Notes
 
 - Confidence & Explainability: For each advice, AgroSense will provide confidence scores and brief reasoning (e.g. “NDVI dropped by X%, likely due to moisture stress; recommended action is Y”).
