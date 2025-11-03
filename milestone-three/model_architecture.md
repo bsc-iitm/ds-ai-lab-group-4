@@ -1,227 +1,228 @@
 # **AgroSense Model Architecture**
 <img width="2436" height="1174" alt="image" src="https://github.com/user-attachments/assets/2015961b-5071-4b26-a527-604f137c3d71" />
 
-
-
-
 ### **1. Overview**
 
 The architecture represents an LLM-powered system that provides personalized agricultural insights to farmers. It combines multiple data sources (like weather, soil, and market data) with a large language model (LLM) that interprets and delivers responses through a user-friendly interface.
 
----
+### **Detailed System Architecture Diagram**
 
-### **2. Components and Flow**
+```mermaid
+graph TD
+    subgraph Client["Client Layer"]
+        Farmer["Farmer User"]
+        UI["Mobile/Web UI"]
+    end
+    
+    subgraph API["API Layer"]
+        REST["REST API Endpoint"]
+        Auth["Authentication<br/>Authorization"]
+    end
+    
+    subgraph Server["Server Layer - Request Processing"]
+        QueryParser["Query Parser<br/>Intent Extraction<br/>Parameter Identification"]
+        ContextRetriever["Context Retriever<br/>Fetch User Profile<br/>Load Preferences"]
+        ContextAssembler["Context Assembler<br/>Merge User Data<br/>Build Context Object"]
+        PromptOrchestrator["Prompt Orchestrator<br/>Construct System Prompt<br/>Format Instructions"]
+        ResponseFormatter["Response Formatter<br/>Structure Output<br/>Format for UI"]
+        ErrorHandler["Error Handler<br/>Exception Management<br/>Fallback Logic"]
+    end
+    
+    subgraph DBLayer["Database Layer"]
+        UserDB["User Profile DB<br/>ID, Location, Language<br/>Farm Details"]
+        HistoryDB["Query History DB<br/>Past Queries<br/>Responses"]
+        ContextDB["Context Settings DB<br/>Crop Type<br/>Farm Size"]
+        CacheDB["Cache Storage<br/>Query Cache<br/>Tool Results"]
+    end
+    
+    subgraph LLMLayer["LLM Processing Layer"]
+        LLMModel["Large Language Model<br/>Core Reasoning Engine"]
+        ToolCaller["Tool Caller<br/>Generate Tool Calls<br/>Parameter Mapping"]
+        StreamProcessor["Stream Processor<br/>Handle Streamed Output<br/>Chunk Management"]
+        ArtifactParser["Artifact Parser<br/>Parse LLM Output<br/>Extract Insights"]
+    end
+    
+    subgraph DataTools["External Data Sources & Tools"]
+        CropHistoryAPI["Crop History API<br/>Past Yields<br/>Cropping Patterns"]
+        NDVIService["NDVI Service<br/>Satellite Imagery<br/>Vegetation Index"]
+        SoilDataAPI["Soil Parameters API<br/>pH, Moisture<br/>Nutrients"]
+        WeatherAPI["Weather API<br/>Temperature<br/>Rainfall, Forecast"]
+        MandiPricesAPI["Mandi Prices API<br/>Market Data<br/>Price History"]
+    end
+    
+    subgraph Cache["Caching Layer"]
+        ResponseCache["Response Cache<br/>Stores Formatted<br/>Responses"]
+        ToolCache["Tool Results Cache<br/>Caches API<br/>Responses"]
+    end
+    
+    Farmer -->|1. Submit Query| UI
+    UI -->|2. HTTP Request| REST
+    REST -->|3. Validate Credentials| Auth
+    Auth -->|4. Route to Parser| QueryParser
+    QueryParser -->|5. Extract Intent| ContextRetriever
+    
+    ContextRetriever -->|6. Query User DB| UserDB
+    ContextRetriever -->|7. Query Context DB| ContextDB
+    ContextRetriever -->|8. Query History DB| HistoryDB
+    
+    UserDB -->|User Data| ContextAssembler
+    ContextDB -->|Settings| ContextAssembler
+    HistoryDB -->|History| ContextAssembler
+    
+    ContextAssembler -->|9. Merged Context| PromptOrchestrator
+    PromptOrchestrator -->|10. System Prompt| LLMModel
+    
+    LLMModel -->|11. Analyze Query| LLMModel
+    LLMModel -->|12. Decide Tools| ToolCaller
+    
+    ToolCaller -->|13. Check Cache| ToolCache
+    ToolCache -->|Cache Hit| ToolCaller
+    ToolCache -->|Cache Miss| ToolCaller
+    
+    ToolCaller -->|14a. Call Weather API| WeatherAPI
+    ToolCaller -->|14b. Call Soil API| SoilDataAPI
+    ToolCaller -->|14c. Call Crop History| CropHistoryAPI
+    ToolCaller -->|14d. Call NDVI Service| NDVIService
+    ToolCaller -->|14e. Call Mandi API| MandiPricesAPI
+    
+    WeatherAPI -->|15. Weather Data| StreamProcessor
+    SoilDataAPI -->|15. Soil Data| StreamProcessor
+    CropHistoryAPI -->|15. History Data| StreamProcessor
+    NDVIService -->|15. NDVI Data| StreamProcessor
+    MandiPricesAPI -->|15. Price Data| StreamProcessor
+    
+    StreamProcessor -->|16. Cache Results| ToolCache
+    StreamProcessor -->|17. Stream Chunks| ArtifactParser
+    ArtifactParser -->|18. Parse Output| ResponseFormatter
+    
+    ResponseFormatter -->|19. Format Response| ResponseCache
+    ResponseCache -->|20. Cache| CacheDB
+    ResponseFormatter -->|21. Stream Response| REST
+    
+    REST -->|22. Send Chunks| UI
+    UI -->|23. Display Response| Farmer
+    
+    PromptOrchestrator -->|24. Store Query| HistoryDB
+    
+    ErrorHandler -.->|Error Recovery| Server
+```
 
-#### **(a) Data Sources / Tools**
+### **LLM Model Selection**
 
-The system integrates several tools that provide domain-specific inputs:
-
-* **Crop History** – past cropping patterns and yield data
-* **NDVI (Normalized Difference Vegetation Index)** – vegetation health from satellite imagery
-* **Soil Parameters** – pH, moisture, and nutrient levels
-* **Weather Parameters** – temperature, rainfall, humidity, forecasts
-* **Mandi Prices** – real-time and historical market prices
-
-These tools serve as **data providers** or APIs that the LLM can call for context-specific information retrieval.
-
----
-
-#### **(b) Large Language Model (LLM)**
-
-* The **core reasoning engine** of the system.
-* Receives the **user’s question** (e.g., “Should I irrigate my wheat crop this week?”) along with **context** (location, crop stage, soil data, etc.).
-* Dynamically queries the tools above to fetch relevant information.
-* Generates a **streaming response** (incremental chunks of output) for real-time conversational interaction.
-
----
-
-#### **(c) Streaming Chunks & Parse Artifact**
-
-* The LLM outputs results as **streaming chunks** partial responses sent progressively for responsiveness.
-* These chunks are processed by the **Parse Artifact** module, which:
-
-  * Converts the streamed text or structured output into usable artifacts (e.g., tables, graphs, or textual advisories).
-  * Ensures the content is formatted appropriately for display on the front-end.
-
----
-
-#### **(d) Front-End Service**
-
-* The **user interface** (web or mobile app) through which the **farmer** interacts with the system.
-* Displays responses from the LLM in a conversational format.
-* Supports **multilingual and multimodal** interactions (e.g., voice/text).
-
----
-
-#### **(e) Server Layer**
-
-* Acts as the **middleware** between the front-end and the LLM.
-* Handles:
-
-  * Context assembly (merging user data, historical context, and environmental data before querying the LLM)
-  * Communication with the database
-
----
-
-#### **(f) Database**
-
-* Stores:
-
-  * **User history** (previous queries, interactions)
-  * **Context settings** (e.g., user location, preferred language, crop type)
-  * This allows the system to provide **personalized and contextual answers** over time.
-
----
-
-#### **(g) Farmer Interaction Loop**
-
-1. The farmer submits a query via the front-end.
-2. The query goes to the **server**, which retrieves context from the **database**.
-3. The **LLM** uses that context and calls relevant **tools**.
-4. The **response** is streamed back, parsed, and displayed interactively to the farmer.
-
----
-
-### **3. Key Features**
-
-* **Continuous Context** – Each interaction builds on past sessions.
-* **Tool Augmentation** – LLM dynamically fetches data via external APIs.
-* **Real-time Conversation** – Streaming responses enhance interactivity.
-* **Personalized Advisory** – Tailored insights for each farmer and crop lifecycle stage.
-
----
-
-# User Story
-## **The Farmer**
-
-As a small holder farmer I want to receive simple, localized, and voice-based guidance at every stage of my crop lifecycle. So that I can make better decisions to maximize yield, reduce risk, and improve profitability.
-
----
-
-## **User Stories by Lifecycle Stage**
-
----
-
-### **1. Onboarding & Setup**
-
-**Story 1.1**
-As a farmer, I want to enter my location or allow GPS detection,
-so that the system can automatically identify my agro-climatic zone.
-
-**Story 1.2**
-As a farmer, I want to draw or confirm my field boundaries (or accept auto-detected ones),
-so that I can monitor only my specific fields.
-
-**Story 1.3**
-As a farmer, I want to provide details like past crops, soil type, and irrigation access,
-so that AgroSense can give more accurate and tailored advice.
-
----
-
-### **2. Pre-Sowing Planning**
-
-**Story 2.1**
-As a farmer, I want to ask “Which crop should I plant this season?”
-so that I can choose crops best suited to my soil and climate.
-
-**Story 2.2**
-As a farmer, I want to know the best sowing window,
-so that I can optimize yield potential based on local weather patterns.
-
-**Story 2.3**
-As a farmer, I want to compare expected yield and profit for different crops,
-so that I can make an informed decision balancing risk and reward.
+#### **Google Gemini 2.5 Pro**
+- **Strengths**: 
+  - Advanced multimodal reasoning (text, images, video)
+  - Excellent context understanding with long context window
+  - Strong performance on agricultural and domain-specific tasks
+  - Cost-effective pricing
+  - Native support for function calling and tool use
+- **Latency**: ~1.5-2.5 seconds average response
+- **Use Case**: Complex agricultural reasoning, multi-turn conversations, image analysis for crop health
+- **Features**:
+  - Supports 1 million token context window
+  - Real-time function calling for tool orchestration
+  - Structured output for consistent response formatting
 
 ---
 
-### **3. Sowing & Early Growth**
+### **Detailed Server Layer Operations**
 
-**Story 3.1**
-As a farmer, I want to monitor how well my crop is germinating using satellite imagery,
-so that I can detect uneven growth early.
+#### **1. Query Parser Module**
+```
+Input: Raw user query (text/voice)
+Process:
+  - Tokenize and normalize input
+  - Identify intent (e.g., "should I irrigate?", "what's the best crop?")
+  - Extract entities (crop name, field location, time period)
+  - Detect context switches or follow-ups
+Output: Structured query object with intent and parameters
+```
 
-**Story 3.2**
-As a farmer, I want to receive alerts when parts of my field show poor vegetation indices (NDVI),
-so that I can take corrective action before it spreads.
+#### **2. Context Retriever Module**
+```
+Input: Structured query, User ID
+Process:
+  - Query User Profile DB: farmer_id, location (lat/long), language
+  - Query Context DB: current_crop, farm_size, irrigation_method, soil_type
+  - Query History DB: last_5_queries, conversation_context
+  - Build context cache for current session
+Output: Complete user context object
+```
 
-**Story 3.3**
-As a farmer, I want to speak or type “Is the soil too dry?” and get an immediate answer,
-so that I can adjust irrigation before damage occurs.
+#### **3. Context Assembler Module**
+```
+Input: Raw query, User context, Historical data
+Process:
+  - Merge user profile with current request
+  - Add historical interaction context
+  - Include current crop lifecycle stage
+  - Attach environmental constraints
+Output: Unified context object ready for LLM
+```
 
----
+#### **4. Prompt Orchestrator Module**
+```
+Input: Assembled context, User query
+Process:
+  - Build system prompt with:
+    * Role definition: "You are an agricultural advisor for Indian farmers"
+    * Available tools and descriptions
+    * Output format instructions (JSON, markdown, etc.)
+    * User preferences (language, detail level)
+  - Add few-shot examples for better responses
+  - Include domain-specific constraints
+Output: Complete system prompt sent to LLM
+```
 
-### **4. Mid-Season Monitoring & Advisory**
-
-**Story 4.1**
-As a farmer, I want to know whether my crop shows signs of nutrient deficiency or water stress,
-so that I can apply fertilizer or water precisely when needed.
-
-**Story 4.2**
-As a farmer, I want AgroSense to ask clarifying questions (e.g., “Do you see yellowing?”),
-so that the diagnosis can become more accurate.
-
-**Story 4.3**
-As a farmer, I want to receive actionable, step-by-step recommendations (e.g., quantity, timing, type of fertilizer),
-so that I can implement them easily and safely.
-
----
-
-### **5. Yield Forecasting & Harvest Timing**
-
-**Story 5.1**
-As a farmer, I want to get a forecast of my expected yield with a confidence range,
-so that I can plan my finances and logistics.
-
-**Story 5.2**
-As a farmer, I want the system to suggest the best harvest window,
-so that I can harvest when quality and yield are optimal.
-
-**Story 5.3**
-As a farmer, I want to simulate scenarios (“If I delay harvest 5 days, what happens?”),
-so that I can make informed trade-offs.
-
----
-
-### **6. Post-Harvest & Market Advisory**
-
-**Story 6.1**
-As a farmer, I want to check real-time mandi prices and nearby market trends,
-so that I can decide when and where to sell.
-
-**Story 6.2**
-As a farmer, I want AgroSense to predict short-term price changes,
-so that I can plan storage or sale timing strategically.
-
-**Story 6.3**
-As a farmer, I want to compare expected profit between selling now and later,
-so that I can make financially sound decisions.
-
----
-
-### **7. Review & Feedback Loop**
-
-**Story 7.1**
-As a farmer, I want to enter my actual yield and field observations,
-so that the system can improve its accuracy for future seasons.
-
-**Story 7.2**
-As a farmer, I want to visualize performance zones on my field map,
-so that I can understand which areas performed well or poorly.
-
-**Story 7.3**
-As a farmer, I want AgroSense to summarize learnings and suggest improvements for next season,
-so that I continuously enhance my practices.
+#### **5. Response Formatter Module**
+```
+Input: Parsed LLM output, Tool results
+Process:
+  - Convert raw LLM text to structured format
+  - Validate recommendations against farm constraints
+  - Create visual artifacts (tables, charts)
+  - Localize content to user language
+  - Add confidence scores to recommendations
+Output: Formatted response ready for UI display
+```
 
 ---
 
-## **Cross-Cutting Functional Stories**
+### **System Prompts Examples**
 
-**Story 8.1 — Multilingual Support**
-As a farmer, I want to communicate in my local language via voice or text,
-so that I can use the app comfortably regardless of literacy level.
+#### **System Prompt Template 1: Weather-Based Irrigation**
+```
+You are an expert agricultural advisor for Indian farms. The farmer has the following setup:
+- Location: {latitude, longitude} - {city}, {state}
+- Crop: {crop_name}, Stage: {growth_stage}
+- Farm Size: {area_hectares} hectares
+- Soil Type: {soil_type}, Current Moisture: {soil_moisture}%
+- Last Irrigation: {days_ago} days ago
+- Current Weather: {temperature}°C, Humidity: {humidity}%, Rain Forecast: {rainfall}mm
 
-**Story 8.2 — Explainability**
-As a farmer, I want the system to explain *why* it is giving a recommendation,
-so that I can trust and understand the advice.
+Available Tools:
+1. get_weather_forecast(lat, lon, days) - Returns 7-day forecast
+2. get_soil_moisture(field_id) - Current soil moisture level
+3. get_crop_water_requirement(crop, stage) - Water needs for growth stage
+
+Task: Answer the farmer's question about irrigation with actionable insights.
+Response Format: JSON with keys: recommendation, reasoning, actions, warnings
+```
+
+#### **System Prompt Template 2: Market Price Advisory**
+```
+You are a market analyst for agricultural commodities. The farmer grows {crop_name}.
+- Region: {region_name}
+- Expected Harvest: {harvest_date}
+- Typical Yield: {kg_per_hectare}
+
+Available Tools:
+1. get_mandi_prices(crop, region, days) - Historical prices
+2. get_market_trend(crop, duration) - Price trends
+3. get_competitor_prices(crop, region) - Competitor pricing
+
+Task: Provide market insights and optimal selling strategies.
+Response Format: JSON with keys: current_price, predicted_price, best_time_to_sell, risks
+```
 
 
