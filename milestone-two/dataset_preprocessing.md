@@ -9,6 +9,7 @@ We have used the following datasets :
 | **Digital Soil Map of the World (SoilWise / FAO-UNESCO)**               | Global 1:5,000,000 scale soil dataset representing dominant soil types per region for environmental and agricultural modeling.       |
 | **Agmarknet – Mandi Price Trend**                                       | Provides daily prices and arrivals of agricultural commodities across Indian mandis for monitoring market trends.                    |                         |
 | **Nominatim (OpenStreetMap API)**                                       | Geocoding service to convert market or location names into geographic coordinates and administrative boundaries.    |
+| **Google Earth Engine – Sentinel 2 - derived NDVI API** | Satellite-based normalized difference vegetation index (NDVI) values for a region or point to identify vegetation cover.           |
 
 Data - https://developers.google.com/earth-engine/tutorials/community/satellite-embedding-02-unsupervised-classification
 
@@ -501,4 +502,127 @@ train.to_csv("mandi_price_train.csv", index=False)
 val.to_csv("mandi_price_val.csv", index=False)
 markets_df.to_csv("markets_geocoded.csv", index=False)
 
+```
+
+### 1. Dataset (GEE NDVI Computation) API / Platform Description
+
+| **Item** | **Description** |
+| :--- | :--- |
+| **Platform / API Name** | **Google Earth Engine (GEE)** (used for NDVI computation) |
+| **Type** | Client Libraries (Python, JavaScript) that build and send requests to a **REST API** (earthengine.googleapis.com). Returns **JSON** for small queries (`.getInfo()`) or exports files (GeoTIFF) for large ones. |
+| **Spatial Domain** | **Global**. Calculations can be performed on any `ee.Geometry` (Point, Polygon, etc.). |
+| **Temporal Domain** | **Historical (c. 1972 – Present)**. The range depends on the data catalog used (e.g., Landsat from 1972+, Sentinel-2 from 2015+). |
+| **Temporal Resolution** | This is the **revisit time** of the satellite, not hourly. <br/> • **Sentinel-2:** ~5 days <br/> • **Landsat 8/9:** ~16 days <br/> • **MODIS:** ~1 day |
+| **Variables / Features** | **Input:** Spectral bands (e.g., **Red**, **Near-Infrared (NIR)**, **Blue**, **Green**, cloud masks). <br/> **Output:** **NDVI** (a unitless index from -1 to +1). |
+| **Units & Timezones** | Input bands are typically **surface reflectance** (unitless, often scaled). Output NDVI is **unitless**. Timestamps are typically **UTC** (ISO 8601). |
+| **Use Case** | Provide **vegetation health / density** information for a point or region by calculating NDVI from satellite imagery. |
+
+---
+
+### 2. Key API Parameters / Concepts
+
+This isn't a simple REST endpoint, so the "parameters" are the methods and arguments used in the Python library to build a computation request.
+
+* `ee.ImageCollection('...')` — The **ID of the dataset** to use (e.g., `COPERNICUS/S2_SR_HARMONIZED`).
+* `.filterDate('start_date', 'end_date')` — Specifies the **temporal window** for the query.
+* `.filterBounds(geometry)` — Specifies the **Area of Interest (AOI)** to filter images.
+* `.filter(ee.Filter.lt('METADATA_FIELD', ...))` — Used to **filter images by metadata**, such as `CLOUDY_PIXEL_PERCENTAGE`.
+* `.median()` / `.mean()` / `.mosaic()` — **Reducers** used to create a single composite image from the collection.
+* `.normalizedDifference(['NIR_BAND', 'RED_BAND'])` — The **function to calculate NDVI**.
+* `.reduceRegion(reducer, geometry, scale)` — **Samples** the image at a specific point or region.
+* `scale` — The **spatial resolution** (in meters) to perform the computation (e.g., `10` for Sentinel-2).
+* `.getInfo()` — The **synchronous request** to pull the computed result (a number or dictionary) from GEE's servers.
+
+---
+
+### 3. GEE Preprocessing & Retrieval Steps
+
+| **Step** | **Description** | **Output / Purpose** |
+| :--- | :--- | :--- |
+| **1. Define AOI & Date Range** | Choose location (`ee.Geometry.Point`) and a `start_date`, `end_date`. | Query parameters |
+| **2. Load & Filter Collection** | Load the desired `ee.ImageCollection` (e.g., Sentinel-2). Filter it by date, bounds, and cloud cover (e.g., `< 20%`). | A filtered `ee.ImageCollection` object. |
+| **3. Create Composite** | Apply a reducer like `.median()` to the collection. This "flattens" all images into one, often removing clouds. | A single `ee.Image` object. |
+| **4. Calculate NDVI** | Apply `.normalizedDifference(['B8', 'B4'])` to the composite image. | An `ee.Image` where pixel values are NDVI (-1 to +1). |
+| **5. Sample Point** | Use `.reduceRegion()` with `ee.Reducer.first()` at your point, specifying the `scale` (e.g., 10 meters). | A server-side `ee.Dictionary` object with the NDVI value. |
+| **6. Retrieve Data** | Call `.getInfo()` on the dictionary. This sends the request to the GEE REST API. | A **JSON** response, parsed by the library into a Python `dict` (e.g., `{'NDVI': 0.62}`). |
+| **7. Parse Value** | Extract the number from the dictionary (e.g., `result.get('NDVI')`). | The final `float` value for your analysis. |
+| **8. Handle Missing Values** | The retrieved value might be `None` if no cloud-free data existed for that point in the time range. | A cleaned, usable number. |
+
+---
+
+## 4. Code
+
+```python
+import ee
+import geemap
+
+try:
+    ee.Initialize()
+except Exception as e:
+    ee.Authenticate()
+    ee.Initialize()
+
+def get_ndvi_at_point(longitude, latitude, start_date, end_date):
+    """
+    Calculates the median NDVI for a specific point and date range.
+    
+    Args:
+        longitude (float): The longitude of the point.
+        latitude (float): The latitude of the point.
+        start_date (str): The start date in 'YYYY-MM-DD' format.
+        end_date (str): The end date in 'YYYY-MM-DD' format.
+        
+    Returns:
+        float: The calculated NDVI value, or None if no data is found.
+    """
+    # 1. Define the point of interest
+    point = ee.Geometry.Point([longitude, latitude])
+    
+    # 2. Load and filter the collection
+    image = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+             .filterDate(start_date, end_date)
+             .filterBounds(point)
+             .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+             .median()) # Get the median of all images in the range
+    
+    # 3. Calculate NDVI
+    ndvi = image.normalizedDifference(['B8', 'B4']).rename('NDVI')
+    
+    # 4. Sample the NDVI value at the point
+    try:
+        ndvi_data = ndvi.reduceRegion(
+            reducer=ee.Reducer.first(),
+            geometry=point,
+            scale=10  # Sentinel-2 B4 and B8 are 10m resolution
+        ).getInfo() # .getInfo() pulls the data from GEE server
+        
+        # 5. Extract the number from the resulting dictionary
+        ndvi_value = ndvi_data.get('NDVI')
+        
+        if ndvi_value is None:
+            print(f"Warning: No valid data found for ({latitude}, {longitude}) "
+                  "in this date range. This could be due to cloud cover.")
+            return None
+            
+        return ndvi_value
+        
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        print("This often happens if no images match your filter (e.g., 100% cloud cover).")
+        return None
+
+
+if __name__ == "__main__":
+	lon = 73.8272 # dindori, nashik
+	lat = 20.2042
+	
+	# Date range
+	start = '2023-06-01'
+	end = '2025-08-31'
+	
+	# Get the single NDVI value
+	ndvi_value = get_ndvi_at_point(lon, lat, start, end)
+	
+	if ndvi_value is not None:
+	    print(f"The median NDVI at ({lat}, {lon}) between {start} and {end} is: {ndvi_value:.4f}")
 ```
