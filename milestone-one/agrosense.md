@@ -163,12 +163,12 @@ Because the system is multilingual, these questions can also be asked in local I
 
 * Story 7.3 As a farmer, I want AgroSense to summarize learnings and suggest improvements for next season, so that I continuously enhance my practices.
 
-***Cross-Cutting Functional Stories*** 
+***8. Cross-Cutting Functional Stories*** 
 * Story 8.1 — Multilingual Support As a farmer, I want to communicate in my local language via voice or text, so that I can use the app comfortably regardless of literacy level.
 
 * Story 8.2 — Explainability As a farmer, I want the system to explain why it is giving a recommendation, so that I can trust and understand the advice.
 
-### 5\. Design Implications & Notes
+### 6\. Design Implications & Notes
 
 - Confidence & Explainability: For each advice, AgroSense will provide confidence scores and brief reasoning (e.g. “NDVI dropped by X%, likely due to moisture stress; recommended action is Y”).
 - Offline / Low Connectivity: Because rural connectivity may be sporadic, certain core functions (e.g. voice recognition, local caching) should work offline or in delay-synced mode.
