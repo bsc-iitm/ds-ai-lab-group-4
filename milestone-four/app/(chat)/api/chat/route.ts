@@ -24,6 +24,8 @@ import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { myProvider } from "@/lib/ai/providers";
 import { createDocument } from "@/lib/ai/tools/create-document";
 import { getWeather } from "@/lib/ai/tools/get-weather";
+import { getNdvi } from "@/lib/ai/tools/get-ndvi";
+import { getMandiPrice } from "@/lib/ai/tools/mandi_price/get-mandi-price";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { updateDocument } from "@/lib/ai/tools/update-document";
 import { isProductionEnvironment } from "@/lib/constants";
@@ -188,6 +190,8 @@ export async function POST(request: Request) {
             selectedChatModel === "chat-model-reasoning"
               ? []
               : [
+                  "getMandiPrice",
+                  "getNdvi",
                   "getWeather",
                   "createDocument",
                   "updateDocument",
@@ -195,6 +199,8 @@ export async function POST(request: Request) {
                 ],
           experimental_transform: smoothStream({ chunking: "word" }),
           tools: {
+            getMandiPrice,
+            getNdvi,
             getWeather,
             createDocument: createDocument({ session, dataStream }),
             updateDocument: updateDocument({ session, dataStream }),
