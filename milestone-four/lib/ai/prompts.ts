@@ -33,7 +33,7 @@ Do not update document right after creating it. Wait for user feedback or reques
 `;
 
 export const regularPrompt =
-  "You are a friendly assistant! Keep your responses concise and helpful.";
+  "You are a friendly assistant! Keep your responses concise and helpful.\n\nWhen users ask about crops in a region or area in India (e.g., 'I want to know crops of a region', 'show me crops', 'what crops are grown'), use the getCropData tool with action 'show_map' to display an interactive map where they can place a pin to select the location.";
 
 export type RequestHints = {
   latitude: Geo["latitude"];

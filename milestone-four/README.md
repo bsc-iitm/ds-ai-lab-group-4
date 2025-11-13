@@ -1,7 +1,7 @@
 ```bash
-npm install
-npm db:migrate 
-npm dev
+bun install
+bun db:migrate 
+bun run dev
 ```
 
 Your app template should now be running on [localhost:3000](http://localhost:3000).

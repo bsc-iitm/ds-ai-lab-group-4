@@ -24,6 +24,8 @@ import { MessageEditor } from "./message-editor";
 import { MessageReasoning } from "./message-reasoning";
 import { PreviewAttachment } from "./preview-attachment";
 import { Weather } from "./weather";
+import { CropData } from "./crop-data";
+import { NDVI } from "./ndvi";
 
 const PurePreviewMessage = ({
   chatId,
@@ -179,6 +181,86 @@ const PurePreviewMessage = ({
                       <ToolOutput
                         errorText={undefined}
                         output={<Weather weatherAtLocation={part.output} />}
+                      />
+                    )}
+                  </ToolContent>
+                </Tool>
+              );
+            }
+
+            if (type === "tool-getCropData") {
+              const { toolCallId, state } = part;
+
+              return (
+                <Tool defaultOpen={true} key={toolCallId}>
+                  <ToolHeader state={state} type="tool-getCropData" />
+                  <ToolContent>
+                    {state === "input-available" && (
+                      <ToolInput input={part.input} />
+                    )}
+                    {state === "output-available" && (
+                      <ToolOutput
+                        errorText={
+                          "error" in part.output
+                            ? String(part.output.error)
+                            : undefined
+                        }
+                        output={
+                          "error" in part.output ? (
+                            <div className="rounded border p-2 text-red-500">
+                              Error: {String(part.output.error)}
+                            </div>
+                          ) : part.output.action === "show_map" ? (
+                            <CropData toolCallId={toolCallId} />
+                          ) : part.output.cropData ? (
+                            <CropData
+                              toolCallId={toolCallId}
+                              initialData={part.output.cropData}
+                            />
+                          ) : (
+                            <CropData toolCallId={toolCallId} />
+                          )
+                        }
+                      />
+                    )}
+                  </ToolContent>
+                </Tool>
+              );
+            }
+
+            if (type === "tool-getNDVI") {
+              const { toolCallId, state } = part;
+
+              return (
+                <Tool defaultOpen={true} key={toolCallId}>
+                  <ToolHeader state={state} type="tool-getNDVI" />
+                  <ToolContent>
+                    {state === "input-available" && (
+                      <ToolInput input={part.input} />
+                    )}
+                    {state === "output-available" && (
+                      <ToolOutput
+                        errorText={
+                          "error" in part.output
+                            ? String(part.output.error)
+                            : undefined
+                        }
+                        output={
+                          "error" in part.output ? (
+                            <div className="rounded border p-2 text-red-500">
+                              Error: {String(part.output.error)}
+                            </div>
+                          ) : part.output.action === "show_map" ? (
+                            <NDVI toolCallId={toolCallId} />
+                          ) : part.output.ndviData ? (
+                            <NDVI
+                              toolCallId={toolCallId}
+                              initialData={part.output.ndviData}
+                            />
+                          ) : (
+                            <NDVI toolCallId={toolCallId} />
+                          )
+                        }
                       />
                     )}
                   </ToolContent>
