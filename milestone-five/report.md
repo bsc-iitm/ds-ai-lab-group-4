@@ -1,4 +1,4 @@
-# Testing and Metric Evaluation
+# Milestone 5 Report
 
 
 ## Test Cases
@@ -242,6 +242,7 @@ Python output:
 ![alt text](getweather.png)
 
 AgroSense Output:
+
 ![alt text](image.png)
 ![alt text](image-1.png)
 
@@ -280,6 +281,16 @@ Python output:
 
 AgroSense Output:
 ![alt text](mandi_apple2.png)
+
+#### Test Case 4: Checking Gemini, ChatGPT for similar responses
+We also crosschecked with Gemini and ChatGPT to see if these tools were able to replicate the NDVI and mandi price data that AgroSense is able to display, and neither tool was able to produce the data that we were able to obtain regarding the NDVI and mandi price. 
+
+As for the weather, both ChatGPT and Gemini are able to retrieve the weather data for any location provided. However, the level of detail that AgroSense provides with one query is something that ChatGPT and Gemini would need to be prompted to do with another prompt, while AgroSense provides the whole stack of information with a single query.
+
+Example of a Gemini response for weather in Nashik, India:
+
+<img width="842" height="560" alt="image" src="https://github.com/user-attachments/assets/948b627c-626a-4094-8b63-c7ef88e294ee" />
+
 
 
 ## Error Analysis
