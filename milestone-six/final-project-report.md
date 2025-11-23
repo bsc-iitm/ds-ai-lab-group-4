@@ -1,9 +1,9 @@
 # AgroSense: Final Project Report
 ## Crop Lifecycle Advisory System
 
-**Project:** AgroSense - AI-Powered Agricultural Advisory Platform  
-**Group:** DS-AI Lab Group 4  
-
+Project: AgroSense - AI-Powered Agricultural Advisory Platform  
+Group: DS-AI Lab Group 4  
+Deployed App: https://agrosense-dsail.vercel.app/
 ---
 
 ## Table of Contents
