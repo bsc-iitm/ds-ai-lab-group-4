@@ -196,7 +196,6 @@ This section outlines the user requirements that drove the development of AgroSe
 - **Framework**: Next.js 15 with React 19
 - **UI Components**: Custom components built with Radix UI and Tailwind CSS
 - **Chat Interface**: Real-time streaming chat with message history
-- **Artifacts System**: Document, code, sheet, and image editing capabilities
 - **Interactive Maps**: Leaflet-based maps for location selection and NDVI visualization
 
 #### 2. Backend API
@@ -204,7 +203,6 @@ This section outlines the user requirements that drove the development of AgroSe
 - **LLM Integration**: Google Gemini 2.5 Pro via AI SDK
 - **Streaming**: Server-Sent Events (SSE) for real-time responses
 - **Authentication**: NextAuth.js for user management
-- **Database**: PostgreSQL with Drizzle ORM
 
 #### 3. AI Tools Library
 15+ specialized tools covering all crop lifecycle phases:
@@ -1322,25 +1320,16 @@ There are no significant errors in the data retrieval. The NDVI values obtained 
 
 ### Short-term (Next 3-6 months)
 
-1. **Multilingual Support**
-   - Hindi, Marathi, Telugu, and other Indian languages
-   - Voice input/output integration
-   - Regional terminology support
-
-2. **Enhanced Soil Data**
+1. **Enhanced Soil Data**
    - Integration with actual soil test results
    - Soil health scoring
    - Nutrient deficiency detection
 
-3. **Pest and Disease Detection**
+2. **Pest and Disease Detection**
    - Image-based pest identification
    - Disease symptom recognition
    - Treatment recommendations
 
-4. **Mobile App**
-   - React Native application
-   - Offline capabilities
-   - Push notifications for alerts
 
 ### Medium-term (6-12 months)
 
@@ -1354,37 +1343,10 @@ There are no significant errors in the data retrieval. The NDVI values obtained 
    - Best practice recommendations
    - Success stories
 
-3. **Integration with IoT Sensors**
-   - Real-time soil moisture sensors
-   - Weather station data
-   - Automated irrigation control
-
-4. **Advanced Analytics**
+3. **Advanced Analytics**
    - Field performance tracking
    - Comparative analysis with other farmers
    - ROI calculations
-
-### Long-term (12+ months)
-
-1. **Blockchain Integration**
-   - Transparent market transactions
-   - Supply chain tracking
-   - Fair pricing mechanisms
-
-2. **Government Integration**
-   - Subsidy information
-   - Scheme eligibility
-   - Direct benefit transfer
-
-3. **Financial Services**
-   - Crop insurance recommendations
-   - Loan eligibility assessment
-   - Financial planning tools
-
-4. **Research and Development**
-   - Collaboration with agricultural universities
-   - Model improvement through farmer feedback
-   - Publication of research findings
 
 ---
 
@@ -1414,19 +1376,6 @@ AgroSense represents a comprehensive solution to the challenges faced by smallho
 3. **Error Handling**: Graceful degradation is essential when dealing with external APIs
 4. **User Experience**: Streaming responses and immediate feedback improve perceived performance
 5. **Validation**: Input validation and bounds checking prevent errors and improve reliability
-
-### Final Thoughts
-
-AgroSense demonstrates the potential of AI-powered agricultural advisory systems. While there are opportunities for enhancement (multilingual support, mobile apps, advanced ML models), the current implementation provides a solid foundation for supporting farmers across all phases of crop management.
-
-The project successfully combines:
-- **Technology**: Modern web stack with AI capabilities
-- **Data**: Multiple sources for comprehensive insights
-- **Domain Knowledge**: Agricultural best practices and Indian context
-- **User-Centric Design**: Accessible, conversational interface
-
-With continued development and farmer feedback, AgroSense has the potential to significantly impact agricultural productivity and farmer livelihoods in India and beyond.
-
 ---
 
 ## Appendix
@@ -1468,11 +1417,3 @@ Complete list of implemented tools with descriptions:
 - `DATABASE_URL` - PostgreSQL connection string
 - `NEXTAUTH_SECRET` - Authentication secret
 - `REDIS_URL` - Optional Redis for caching
-
-### E. Deployment Instructions
-
-1. Set up PostgreSQL database
-2. Configure environment variables
-3. Run database migrations: `pnpm db:migrate`
-4. Build application: `pnpm build`
-5. Deploy to Vercel or similar platform
