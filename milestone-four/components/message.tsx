@@ -211,14 +211,24 @@ const PurePreviewMessage = ({
                               Error: {String(part.output.error)}
                             </div>
                           ) : part.output.action === "show_map" ? (
-                            <CropData toolCallId={toolCallId} />
+                            <CropData 
+                              toolCallId={toolCallId} 
+                              showBoundaries={part.output.showBoundaries ?? false}
+                              showCropNames={part.output.showCropNames ?? false}
+                            />
                           ) : part.output.cropData ? (
                             <CropData
                               toolCallId={toolCallId}
                               initialData={part.output.cropData}
+                              showBoundaries={part.output.showBoundaries ?? false}
+                              showCropNames={part.output.showCropNames ?? false}
                             />
                           ) : (
-                            <CropData toolCallId={toolCallId} />
+                            <CropData 
+                              toolCallId={toolCallId} 
+                              showBoundaries={part.output.showBoundaries ?? false}
+                              showCropNames={part.output.showCropNames ?? false}
+                            />
                           )
                         }
                       />

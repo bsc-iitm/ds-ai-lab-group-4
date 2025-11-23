@@ -10,6 +10,15 @@ import type { updateDocument } from "./ai/tools/update-document";
 import type { Suggestion } from "./db/schema";
 import type { AppUsage } from "./usage";
 import { getMandiPrice } from "@/lib/ai/tools/mandi_price/get-mandi-price";
+import type { getCropRecommendation } from "./ai/tools/get-crop-recommendation";
+import type { getSowingCalendar } from "./ai/tools/get-sowing-calendar";
+import type { getCostBenefitAnalysis } from "./ai/tools/get-cost-benefit-analysis";
+import type { getSoilAnalysis } from "./ai/tools/get-soil-analysis";
+import type { getIrrigationAdvisory } from "./ai/tools/get-irrigation-advisory";
+import type { getFertilizerRecommendation } from "./ai/tools/get-fertilizer-recommendation";
+import type { getYieldPrediction } from "./ai/tools/get-yield-prediction";
+import type { getHarvestTiming } from "./ai/tools/get-harvest-timing";
+import type { getPriceTrendAnalysis } from "./ai/tools/get-price-trend-analysis";
 
 export type DataPart = { type: "append-message"; message: string };
 
@@ -28,6 +37,15 @@ type requestSuggestionsTool = InferUITool<
   ReturnType<typeof requestSuggestions>
 >;
 type getMandiPriceTool = InferUITool<typeof getMandiPrice>;
+type getCropRecommendationTool = InferUITool<typeof getCropRecommendation>;
+type getSowingCalendarTool = InferUITool<typeof getSowingCalendar>;
+type getCostBenefitAnalysisTool = InferUITool<typeof getCostBenefitAnalysis>;
+type getSoilAnalysisTool = InferUITool<typeof getSoilAnalysis>;
+type getIrrigationAdvisoryTool = InferUITool<typeof getIrrigationAdvisory>;
+type getFertilizerRecommendationTool = InferUITool<typeof getFertilizerRecommendation>;
+type getYieldPredictionTool = InferUITool<typeof getYieldPrediction>;
+type getHarvestTimingTool = InferUITool<typeof getHarvestTiming>;
+type getPriceTrendAnalysisTool = InferUITool<typeof getPriceTrendAnalysis>;
 
 export type ChatTools = {
   getWeather: weatherTool;
@@ -37,6 +55,15 @@ export type ChatTools = {
   updateDocument: updateDocumentTool;
   requestSuggestions: requestSuggestionsTool;
   getMandiPrice: getMandiPriceTool;
+  getCropRecommendation: getCropRecommendationTool;
+  getSowingCalendar: getSowingCalendarTool;
+  getCostBenefitAnalysis: getCostBenefitAnalysisTool;
+  getSoilAnalysis: getSoilAnalysisTool;
+  getIrrigationAdvisory: getIrrigationAdvisoryTool;
+  getFertilizerRecommendation: getFertilizerRecommendationTool;
+  getYieldPrediction: getYieldPredictionTool;
+  getHarvestTiming: getHarvestTimingTool;
+  getPriceTrendAnalysis: getPriceTrendAnalysisTool;
 };
 
 export type CustomUIDataTypes = {

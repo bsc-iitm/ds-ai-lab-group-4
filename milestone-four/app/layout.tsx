@@ -8,8 +8,8 @@ import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://chat.vercel.ai"),
-  title: "agrosense",
-  description: "Next.js chatbot template using the AI SDK.",
+  title: "AgroSense - Crop Lifecycle Advisory System",
+  description: "AgroSense is an expert agricultural advisor for Indian farmers, helping across all stages of crop management from pre-sowing planning to post-harvest market decisions.",
 };
 
 export const viewport = {

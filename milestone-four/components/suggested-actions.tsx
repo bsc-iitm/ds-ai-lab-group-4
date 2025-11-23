@@ -15,13 +15,19 @@ type SuggestedActionsProps = {
 
 function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
   const suggestedActions = [
-    "What is the weather in Pune?",
-    "What is the weather in Delhi?",
+    "Which crop should I plant this season?",
+    "When is the best time to sow wheat?",
+    "What is the estimated cost vs profit for rice?",
+    "How much fertilizer should I apply now?",
+    "Should I irrigate my crop today?",
+    "What yield can I expect from my field?",
+    "When should I begin harvesting?",
+    "What are the current mandi prices for my crop?",
   ];
 
   return (
     <div
-      className="grid w-full gap-2 sm:grid-cols-2"
+      className="grid w-full gap-2 sm:grid-cols-2 lg:grid-cols-4"
       data-testid="suggested-actions"
     >
       {suggestedActions.map((suggestedAction, index) => (

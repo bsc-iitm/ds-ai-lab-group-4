@@ -5,7 +5,7 @@ export const getNDVI = tool({
   description: "Get NDVI (Normalized Difference Vegetation Index) data for vegetation analysis in a region in India. NDVI measures vegetation health and density. When a user asks about vegetation, NDVI, plant health, or crop health in a region, automatically show a map for them to place a pin or draw a polygon. After they place a pin or draw a polygon, fetch NDVI data from Google Earth Engine for that location. Only works for locations within India. Always start with action 'show_map' when user asks about vegetation or NDVI.",
   inputSchema: z.object({
     action: z.enum(["show_map", "fetch_data"]).describe("Action to take: 'show_map' to display the map for polygon drawing (use this when user first asks about vegetation/NDVI), 'fetch_data' to get NDVI data after polygon is drawn"),
-    polygon: z.array(z.tuple([z.number(), z.number()])).optional().describe("Array of [latitude, longitude] coordinates forming a polygon (required for fetch_data)"),
+    polygon: z.array(z.array(z.number()).length(2)).optional().describe("Array of [latitude, longitude] coordinates forming a polygon (required for fetch_data)"),
     startDate: z.string().optional().describe("Start date for NDVI analysis in YYYY-MM-DD format (optional, defaults to 3 months ago)"),
     endDate: z.string().optional().describe("End date for NDVI analysis in YYYY-MM-DD format (optional, defaults to today)"),
   }),

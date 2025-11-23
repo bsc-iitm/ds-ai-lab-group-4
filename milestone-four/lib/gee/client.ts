@@ -379,6 +379,10 @@ export async function fetchCropDataFromGEE(
     year: string;
     source: string;
     region?: string;
+    croplandAreaM2?: number;
+    totalAreaM2?: number;
+    croplandPercentage?: number;
+    note?: string;
   };
 }> {
   // Check if GEE is configured - throw error if not

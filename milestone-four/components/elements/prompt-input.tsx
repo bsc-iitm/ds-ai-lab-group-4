@@ -24,7 +24,7 @@ export type PromptInputProps = HTMLAttributes<HTMLFormElement>;
 export const PromptInput = ({ className, ...props }: PromptInputProps) => (
   <form
     className={cn(
-      "w-full overflow-hidden rounded-xl border bg-background shadow-xs",
+      "w-full overflow-hidden rounded-2xl border bg-background shadow-xs",
       className
     )}
     {...props}
@@ -72,7 +72,7 @@ export const PromptInputTextarea = ({
   return (
     <Textarea
       className={cn(
-        "w-full resize-none rounded-none border-none p-3 shadow-none outline-hidden ring-0",
+        "w-full resize-none rounded-none border-none p-2 shadow-none outline-hidden ring-0",
         disableAutoResize
           ? "field-sizing-fixed"
           : resizeOnNewLinesOnly
@@ -114,7 +114,7 @@ export const PromptInputTools = ({
   <div
     className={cn(
       "flex items-center gap-1",
-      "[&_button:first-child]:rounded-bl-xl",
+      "[&_button:first-child]:rounded-bl-2xl",
       className
     )}
     {...props}

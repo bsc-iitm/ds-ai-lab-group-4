@@ -13,3 +13,4 @@ env
 pnpm-lock.yaml
 .env.local
 package.json
+.vercel

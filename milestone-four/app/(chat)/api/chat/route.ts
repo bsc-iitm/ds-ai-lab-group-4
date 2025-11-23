@@ -47,6 +47,15 @@ import { convertToUIMessages, generateUUID } from "@/lib/utils";
 import { generateTitleFromUserMessage } from "../../actions";
 import { type PostRequestBody, postRequestBodySchema } from "./schema";
 import { getMandiPrice } from "@/lib/ai/tools/mandi_price/get-mandi-price";
+import { getCropRecommendation } from "@/lib/ai/tools/get-crop-recommendation";
+import { getSowingCalendar } from "@/lib/ai/tools/get-sowing-calendar";
+import { getCostBenefitAnalysis } from "@/lib/ai/tools/get-cost-benefit-analysis";
+import { getSoilAnalysis } from "@/lib/ai/tools/get-soil-analysis";
+import { getIrrigationAdvisory } from "@/lib/ai/tools/get-irrigation-advisory";
+import { getFertilizerRecommendation } from "@/lib/ai/tools/get-fertilizer-recommendation";
+import { getYieldPrediction } from "@/lib/ai/tools/get-yield-prediction";
+import { getHarvestTiming } from "@/lib/ai/tools/get-harvest-timing";
+import { getPriceTrendAnalysis } from "@/lib/ai/tools/get-price-trend-analysis";
 
 export const maxDuration = 60;
 
@@ -195,6 +204,15 @@ export async function POST(request: Request) {
                   "getWeather",
                   "getCropData",
                   "getNDVI",
+                  "getCropRecommendation",
+                  "getSowingCalendar",
+                  "getCostBenefitAnalysis",
+                  "getSoilAnalysis",
+                  "getIrrigationAdvisory",
+                  "getFertilizerRecommendation",
+                  "getYieldPrediction",
+                  "getHarvestTiming",
+                  "getPriceTrendAnalysis",
                   "createDocument",
                   "updateDocument",
                   "requestSuggestions",
@@ -205,6 +223,15 @@ export async function POST(request: Request) {
             getWeather,
             getCropData,
             getNDVI,
+            getCropRecommendation,
+            getSowingCalendar,
+            getCostBenefitAnalysis,
+            getSoilAnalysis,
+            getIrrigationAdvisory,
+            getFertilizerRecommendation,
+            getYieldPrediction,
+            getHarvestTiming,
+            getPriceTrendAnalysis,
             createDocument: createDocument({ session, dataStream }),
             updateDocument: updateDocument({ session, dataStream }),
             requestSuggestions: requestSuggestions({

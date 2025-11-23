@@ -35,9 +35,11 @@ type CropDataProps = {
   toolCallId?: string;
   onDataFetched?: (data: CropDataResponse) => void;
   initialData?: CropDataResponse;
+  showBoundaries?: boolean;
+  showCropNames?: boolean;
 };
 
-export function CropData({ toolCallId, onDataFetched, initialData }: CropDataProps) {
+export function CropData({ toolCallId, onDataFetched, initialData, showBoundaries = false, showCropNames = false }: CropDataProps) {
   const [polygon, setPolygon] = useState<Array<[number, number]> | null>(
     initialData?.location.polygon || null
   );
@@ -141,6 +143,8 @@ export function CropData({ toolCallId, onDataFetched, initialData }: CropDataPro
           <CropMap
             onPolygonDrawn={handlePolygonDrawn}
             initialPolygon={cropData.location.polygon || polygon || undefined}
+            showBoundaries={showBoundaries}
+            showCropNames={showCropNames}
           />
         </div>
         <div className="flex justify-end">
@@ -161,7 +165,7 @@ export function CropData({ toolCallId, onDataFetched, initialData }: CropDataPro
 
   return (
     <div className="w-full space-y-4">
-      <CropMap onPolygonDrawn={handlePolygonDrawn} />
+      <CropMap onPolygonDrawn={handlePolygonDrawn} showBoundaries={showBoundaries} showCropNames={showCropNames} />
       
       {polygon && polygon.length >= 3 && (
         <div className="rounded-lg border bg-white p-4">
