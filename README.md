@@ -57,6 +57,12 @@ ds-ai-lab-group-4/
 │   └── dataset_preprocessing.md     # Data integration and preprocessing pipelines
 ├── milestone-three/
 │   └── model_architecture.md        # LLM-powered system architecture and design
+├── milestone-four/
+│   └── code                         # Code for the whole web app + server side LLM calls
+├── milestone-five/
+│   └── report.md                    # Testing and evaluation of AgroSense chatbot
+├── milestone-six/
+│   └── final-project-report.md      # Final report
 └── README.md                        # This file
 ```
  
@@ -84,6 +90,20 @@ ds-ai-lab-group-4/
 - Server layer components (Query Parser, Context Retriever, etc.)
 - Tool orchestration and streaming response handling
 - Database schema for user context and history
+
+#### **Milestone Four: Developing the Tool**
+- Putting everything together on a Next.js-powered web app
+- Conversation memory included
+- Various tools for farmers to engage with also worked in
+
+#### **Milestone Five: Testing and Evaluation**
+- Testing deterministic API calls (Python) side by side with the chatbot
+- Identifying any issues with the workflow
+- Comparing to other off-the-shelf tools like Gemini and ChatGPT
+
+#### **Milestone Six: Final Report (Documentation)**
+- Putting the whole project into an easy to read markdown report
+- Integrates all the previous milestones and compiles them into one place
  
 ## Tech Stack
  
@@ -128,11 +148,11 @@ ds-ai-lab-group-4/
 - [x] Database schema
  
 ### Upcoming: Implementation & Deployment
-- [ ] Backend API development (FastAPI)
-- [ ] LLM integration (Gemini 2.5 Pro)
-- [ ] Frontend development (React/React Native)
-- [ ] Database setup and data loading
-- Testing and validation
+- [x] Backend API development (FastAPI)
+- [x] LLM integration (Gemini 2.5 Pro)
+- [x] Frontend development (React/React Native)
+- [x] Database setup and data loading
+- [x] Testing and validation
 - Pilot deployment with farmers
  
 ## How It Works
