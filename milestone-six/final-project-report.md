@@ -8,7 +8,7 @@ Deployed App: https://agrosense-dsail.vercel.app/
 
 ## Table of Contents
 
-1. [Executive Summary](#executive-summary)
+1. [Summary](#summary)
 2. [Project Overview](#project-overview)
 3. [User Stories by Lifecycle Stage](#user-stories-by-lifecycle-stage)
 4. [Project Milestones](#project-milestones)
@@ -26,7 +26,7 @@ Deployed App: https://agrosense-dsail.vercel.app/
 
 ---
 
-## Executive Summary
+## Summary
 
 AgroSense is a comprehensive AI-powered agricultural advisory platform designed to support smallholder farmers across all phases of the crop lifecycle. The system integrates satellite remote sensing, real-time weather data, soil analysis, market intelligence, and generative AI to provide location-specific, actionable recommendations.
 
