@@ -189,6 +189,9 @@ This section outlines the user requirements that drove the development of AgroSe
 
 ### System Components
 
+<img width="2436" height="1174" alt="502695032-2015961b-5071-4b26-a527-604f137c3d71" src="https://github.com/user-attachments/assets/c752a99f-532b-4959-a13c-5cd88179a07b" />
+
+
 #### 1. Frontend (Next.js 15)
 - **Framework**: Next.js 15 with React 19
 - **UI Components**: Custom components built with Radix UI and Tailwind CSS
